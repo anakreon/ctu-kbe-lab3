@@ -261,8 +261,9 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
     - runs `hash` method to test the validity of above-mentioned plaintext password
   
 ## Task 7: Explain why teacher's password is insecure despite it's length
-  The password is insecure because it can be found using tables with pre-calculated values of plaintexts and their hashes (rainbow tables). Cracking such hash is simply a lookup in this table. 
-  In this example, the salt value is short. Using longer values for salt should help prevent such precomputation attacks.
+  The password is insecure because it can be found using tables with pre-calculated values of plaintexts and their hashes (rainbow tables). Cracking such hash is simply a lookup in this table. Using longer and random values for salt should help prevent such precomputation attacks.
+  
+  In the example ouf our teacher's password, it does have the salt value, however the salt value is short and NOT random. String `fm9fytmf7qkckct` which includes the password `fm9fytmf7q` and the salt `kckct` is in fact a part of well-known serial number for MS Office XP. As such, being not random, it has been pre-calculated and is contained in the above-mentioned lookup tables.
 
 ## Task 8: Print a list of all table names and their columns
   Using the same technique as in Task 4, we can print values of other tables simply using the UNION operator along with CONCAT. In this case we need to query tables of INFORMATION_SCHEMA *(INFORMATION_SCHEMA.TABLES, INFORMATION_SCHEMA.COLUMNS)*
@@ -418,6 +419,7 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
   
   **task9.test.js**
   - runs `getXorKey` method with each of the plaintext/ciphertext combinations in order to calculate the keys
+  - runs `hex2txt` method to convert the hex value of key into plaintext value
 
 Keys
   - K<sub>1</sub>
@@ -429,4 +431,4 @@ Keys
 
   There is some small inconcistency between these which may be due difference in length of the strings or due to different encoding of some special characters. Nevertheless, it is easy to observe a pattern:
 
-  Cyclic key `786f725f6b65795f333337315f6b62655f32303230` seems to be used.
+  Cyclic key `786f725f6b65795f333337315f6b62655f32303230` seems to be used. It's value in plaintext is `xor_key_3371_kbe_2020`, which suggests this is a correct value.
