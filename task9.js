@@ -1,4 +1,3 @@
-
 export const getXorKey = (plaintext, base64hashed) => {
     const bufferObj = Buffer.from(base64hashed, "base64");
     const decodedHash = bufferObj.toString("utf8");
@@ -13,3 +12,14 @@ export const getXorKey = (plaintext, base64hashed) => {
     }
     return key;
 } 
+
+export function hex2txt (input, bytesPerChar = 1) {
+    const hex = input.toString();
+    let result = '';
+    for (var i = 0; i < hex.length; i += 2*bytesPerChar) {
+        const charCodeHex = hex.substr(i, 2*bytesPerChar);
+        const charCodeDec = parseInt(charCodeHex, 16).toString(10);
+        result += String.fromCharCode(charCodeDec);
+    }
+    return result;
+}

@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { getXorKey } from './task9.js';
+import { getXorKey, hex2txt } from './task9.js';
 
 const { expect } = chai;
 
@@ -24,5 +24,14 @@ describe('getXorKey', () => {
         const expectedKey = '786f725f6b65795f333337315f6b62655f32303230786f725f6b65795f333337315f6b62655f32303230786f725f6b65795f333337315f6b62655f3230';
         const result = getXorKey(plaintext, base64hashed);
         expect(result).to.equal(expectedKey);
+    });
+});
+
+describe('hex2txt', () => {
+    it('', () => {
+        const hex = '786f725f6b65795f333337315f6b62655f32303230';
+        const expectedText = 'xor_key_3371_kbe_2020';
+        const result = hex2txt(hex);
+        expect(result).to.equal(expectedText);
     });
 });
